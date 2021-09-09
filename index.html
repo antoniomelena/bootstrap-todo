@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Todo List</title>
+  <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+  />
+  <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">To Do List</a>
+      <button id="addTodo" class="btn btn-info" type="button">
+      <i class="bi bi-plus-square-dotted"></i>
+      </button>
+    </div>
+  </nav>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-4 mt-3">
+        <div id=projectsContainer class="list-unstyled list-group"></div>
+        <form id="newProjectForm" class="form-group">
+          <input type="text" id="newProject" class="form-control bg-light">
+          <button class="btn btn-info btn-block"><i class="bi bi-plus-square-dotted"></i></button>
+        </form>
+      </div>
+      <div class="col-8">
+        <div id="todosContainer" ></div>
+        <div id="delete-project">
+          <button id="delete-project-button" class="btn btn-danger btn-block">Delete Project</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="newTodoModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="newTaskModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newTaskModalLabel">New Todo</h5>
+          <button
+            type="button"
+            class="close cancel"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="newTodoForm" class="form-group">
+          <div class="modal-body">
+            <label for="todoTitle">Title:</label><br>
+            <input
+              type="text"
+              class="form-control"
+              name="title"
+              id="todoTitle"
+              maxlength="25"
+              required
+            /><br>
+            <label for="todoDescription">Description:</label><br>
+            <input
+              type="text"
+              class="form-control"
+              name="description"
+              id="todoDescription"
+              maxlength="60"
+            /><br>
+            <label for="todoDate">Date:</label><br>
+            <input
+              type="date"
+              class="form-control"
+              name="date"
+              id="todoDate"
+              required
+            /><br>
+            <label for="todoPriority">Priority:</label><br>
+            <select
+              name="priority"
+              id="todoPriority"
+              class="form-control"
+            >
+              <option selected></option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+            <!-- <button
+              type="submit"
+              id="newTodoSubmitButton"
+              class="btn btn-info btn-block"
+            >
+            <i class="bi bi-plus-square-dotted"></i>
+            </button> -->
+          </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary cancel"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                class="btn btn-info"
+                value="Submit"
+                id="newTaskSubmitButton"
+              >
+                <i class="bi bi-plus-square-dotted"></i>
+              </button>
+            </div>
+        </form> 
+      </div>
+    </div>
+  </div>
+  <nav class="navbar fixed-bottom navbar-dark bg-dark">
+    <a class="navbar-brand navbar-item" href="https://github.com/antoniomelena">
+      <i class="bi bi-github"></i>
+    </a>
+  </nav>
+  <script src="./main.js"></script>
+</body>
+</html>
