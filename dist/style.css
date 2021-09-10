@@ -1,3 +1,13 @@
 .modal {
   background-color: rgba(0, 0, 0, .5);
 }
+
+.border-danger,
+.border-warning,
+.border-success {
+  border-width: 3px;
+}
+
+.noStyle {
+  pointer-events: none;
+}

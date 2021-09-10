@@ -7,6 +7,15 @@ const deleteProjectButton = document.getElementById('delete-project-button')
 
 const LOCAL_STORAGE_PROJECT_KEY = 'project.projectsList';
 let projectsList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY)) || [{id: "001", name: "Indox", todos: []}];
+
+// let projectsList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY)) || [{id: "001", name: "Indox", todos: [{id: "1631243612891", title: "Pick up milk", description: "2%", date: "2021-09-09", priority: "high", complete: true},
+//                                                                                                                       {id: "1231241612892", title: "Buy dinner", description: "6pc chicken", date: "2021-10-13", priority: "medium", complete: false},
+//                                                                                                                       {id: "1631221612893", title: "Gym", description: "Max reps", date: "2021-09-10", priority: "low", complete: false},
+//                                                                                                                       {id: "1631221612843", title: "Swim", description: "3 kilometers", date: "2021-09-11", priority: "medium", complete: true}]},
+//                                                                                    {id: "002", name: "Groceries", todos: [{id: "1631243612891", title: "Pick up milk", description: "2%", date: "2021-09-09", priority: "high", complete: true},
+//                                                                                                                           {id: "1231241612892", title: "Buy dinner", description: "6pc chicken", date: "2021-10-13", priority: "medium", complete: false}]},
+//                                                                                    {id: "003", name: "Fitness", todos: [{id: "1631221612893", title: "Gym", description: "Max reps", date: "2021-09-10", priority: "low", complete: false},
+//                                                                                                                         {id: "1631221612843", title: "Swim", description: "3 kilometers", date: "2021-09-11", priority: "medium", complete: true}]}];
 const LOCAL_STORAGE_SELECTED_PROJECT_ID_KEY = 'project.selectedProjectId';
 let selectedProjectId = localStorage.getItem(LOCAL_STORAGE_SELECTED_PROJECT_ID_KEY) || "001";
 
@@ -101,7 +110,8 @@ const createTodo = (title, description, date, priority) => ({
   title,
   description,
   date,
-  priority
+  priority, 
+  complete: false
 });
 
 newTodoForm.addEventListener('submit', (e) => {
@@ -121,7 +131,7 @@ newTodoForm.addEventListener('submit', (e) => {
   closeModal();
 })
 
-const createTodoCard = (id, title, date, description, priority) => {
+const createTodoCard = (id, title, date, description, priority, complete) => {
   const cardDiv = document.createElement('div');
   const cardHeaderDiv = document.createElement('div');
   cardHeaderDiv.classList.add('card-header')
@@ -130,82 +140,104 @@ const createTodoCard = (id, title, date, description, priority) => {
   const cardDate = document.createElement('p');
   const trashButton = document.createElement('button');
   const editButton = document.createElement('button');
-  const accrodianButton = document.createElement('button');
-  accrodianButton.innerHTML = '+'
+  const accordianButton = document.createElement('button');
+  accordianButton.innerHTML = '+'
   cardBodyDiv.setAttribute('id', `${id}Panel`)
+  cardBodyDiv.style.display = "none";
+  const completeCheckbox = document.createElement('INPUT');
+  completeCheckbox.setAttribute("type", "checkbox");
+  completeCheckbox.classList.add('completeCheckbox', "mr-2")
+  completeCheckbox.checked = complete;
 
   //
   const editableTitle = document.createElement('h4');
   let titleText = document.createTextNode(title);
-
+  
   editableTitle.appendChild(titleText);
   editableTitle.setAttribute('id', 'editableTitle');
   editableTitle.classList.add('editable-title', 'card-title', 'd-inline', 'text-uppercase');
   cardDiv.appendChild(editableTitle);
   //
-
+  
   //
   const editableDescription = document.createElement('div');
-
+  
   let value = description;
   let text;
-
+  
   if (value == null || value == '') {
     text = document.createTextNode('Add description');
   } else {
     text = document.createTextNode(value);
   }
-
+  
   editableDescription.appendChild(text);
   editableDescription.setAttribute('id', 'editableDescription');
   editableDescription.classList.add('editable-description', 'card-text', "font-weight-light", 'm-2');
   cardDiv.appendChild(editableDescription);
   //
-
+  
   //
   switch(priority) {
     case "high":
-        cardDiv.classList.add('border-danger');
-        editButton.innerHTML = "High";
-        editButton.classList.add('edit-todo', 'btn', 'btn-outline-danger');
-        break;
+      cardDiv.classList.add('border-danger');
+      editButton.innerHTML = "High";
+      editButton.classList.add('edit-todo', 'btn', 'btn-outline-danger');
+      break;
     case "medium":
-        cardDiv.classList.add('border-warning');
-        editButton.classList.add('edit-todo', 'btn', 'btn-outline-warning');
-        editButton.innerHTML = "Medium";
-        break;
+      cardDiv.classList.add('border-warning');
+      editButton.classList.add('edit-todo', 'btn', 'btn-outline-warning');
+      editButton.innerHTML = "Medium";
+      break;
     case "low":
-        cardDiv.classList.add('border-success');
-        editButton.classList.add('edit-todo', 'btn', 'btn-outline-success');
-        editButton.innerHTML = "Low";
-        break;
-   }
-  //
-
+      cardDiv.classList.add('border-success');
+      editButton.classList.add('edit-todo', 'btn', 'btn-outline-success');
+      editButton.innerHTML = "Low";
+      break;
+    }
+      //
+      
   cardDiv.setAttribute('id', id)
   cardDiv.classList.add('card', 'my-2')
   let newDate = addDays(new Date(date), 1)
   cardDate.innerHTML = format(new Date(newDate), 'MM/dd/yyyy');
   cardDate.classList.add('card-date', 'd-inline', "mx-3", "font-weight-light")
-  trashButton.innerHTML = "X";
+  const iEle = document.createElement('I')
+  iEle.classList.add('bi', 'bi-trash')
+  trashButton.appendChild(iEle);
   trashButton.classList.add('delete-todo', 'btn', 'btn-danger', 'd-inline', 'float-right', 'ml-1');
-  accrodianButton.classList.add('accordian', 'btn', 'btn-secondary', 'float-right');
-  cardHeaderDiv.appendChild(editableTitle)
-  cardHeaderDiv.appendChild(cardDate)
+  accordianButton.classList.add('accordian', 'btn', 'btn-secondary', 'float-right');
+  if (complete) {
+    editableTitle.style.pointerEvents = 'none';
+    editableDescription.style.pointerEvents = 'none';
+    editButton.style.pointerEvents = 'none';
+    cardDate.style.pointerEvents = 'none';
+    cardDiv.style.opacity = '.4'
+  }
+  cardHeaderDiv.appendChild(completeCheckbox);
+  cardHeaderDiv.appendChild(editableTitle);
+  cardHeaderDiv.appendChild(cardDate);
   cardHeaderDiv.appendChild(trashButton);
-  cardHeaderDiv.appendChild(accrodianButton)
+  cardHeaderDiv.appendChild(accordianButton);
   cardBodyDiv.appendChild(editableDescription);
   cardBodyDiv.appendChild(editButton);
   cardDiv.appendChild(cardHeaderDiv);
   cardDiv.appendChild(cardBodyDiv);
   return cardDiv
 }
-
-function render() {
-  clearElement(container);
-  let selectedProject = projectsList.find(project => project.id === selectedProjectId);
-  selectedProject.todos.forEach(todo => {
-    const card = createTodoCard(todo.id, todo.title, todo.date, todo.description, todo.priority)
+      
+      function render() {
+        clearElement(container);
+        let selectedProject = projectsList.find(project => project.id === selectedProjectId);
+        selectedProject.todos.forEach(todo => {
+    const card = createTodoCard(
+      todo.id, 
+      todo.title, 
+      todo.date, 
+      todo.description, 
+      todo.priority, 
+      todo.complete
+    )
     container.appendChild(card);
   })
 }
@@ -214,7 +246,7 @@ render();
 // delete todo
 function deleteCheck(itemId, selectedProject) {
   if (selectedProject.id !== "001") {
-    // selectedProject.todos = selectedProject.todos.filter(todo => todo.id !== itemId);
+    selectedProject.todos = selectedProject.todos.filter(todo => todo.id !== itemId);
     inbox.todos = inbox.todos.filter(todo => todo.id !== itemId);
     saveAndRender();
     render();
@@ -292,7 +324,10 @@ container.addEventListener('click', (e) => {
   let selectedProject = projectsList.find(project => project.id === selectedProjectId);
   if (item.classList.contains('delete-todo')) {
     deleteCheck(itemId, selectedProject);
-  } else if (item.classList.contains('edit-todo')) {
+  } else if (item.classList.contains('bi-trash')) {
+    const itemId = e.target.parentElement.parentElement.parentElement.id
+    deleteCheck(itemId, selectedProject);
+  }  else if (item.classList.contains('edit-todo')) {
     changePriority(itemId, selectedProject);
   } else if (item.classList.contains('editable-description')) {
     changeDescription(item, itemId, selectedProject);
@@ -308,6 +343,23 @@ container.addEventListener('click', (e) => {
     } else {
       panel.style.display = "block";
     }
+  } else if (item.classList.contains('completeCheckbox')) {
+    let inboxTodo = inbox.todos.find(todo => todo.id === itemId);
+    let todoToEdit = selectedProject.todos.find(todo => todo.id === itemId);
+    if (selectedProjectId == "001") {
+      let tof = !inboxTodo.complete;
+      projectsList.forEach(project => {
+        let x = project.todos.find(todo => todo.id === itemId);
+        if (x !== undefined) {
+          x.complete = tof;
+        }
+      })
+    } else {
+      todoToEdit.complete = !todoToEdit.complete;
+      inboxTodo.complete = todoToEdit.complete;
+    }
+    saveAndRender();
+    render();
   }
 });
 
